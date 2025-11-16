@@ -2,22 +2,109 @@
     <head>
         <script src="./list.min.js"></script>
         <script>
-            window.onload = ()=>{
-                var userList = new List('users', {
-                    valueNames: ['name', 'price']
+
+            let userList = null;
+
+            window.onload = async ()=>{
+                try{
+                    const result = await fetchData("https://fr-user.github.io/acSeaFoodListing/data.csv");
+
+                    const splitted_result = result.split("\n")
+
+                    const index = splitted_result[0].replaceAll(" ", "_").split(",");
+                    const rows = splitted_result.slice(1);
+
+                    console.log(index);
+                    makeSortBtns(index);
+                    insertRows(rows, index);
+
+                    userList = new List('users', {
+                        valueNames: index
+                    });
+                }catch(error){
+                    console.error(error);
+                }
+
+            }
+
+            const makeSortBtns = (index)=>{
+
+                if(index.length < 1){
+                    throw new Error("입력이 배열이 아님");
+                }
+
+                const btn_holder = document.querySelector("div#sortbtns");
+                if((btn_holder === undefined) || (btn_holder === null)){
+                    throw new Error("버튼이 들어갈 공간이 없음");
+                }
+
+                index.forEach(element=>{
+                    const btn = document.createElement('button');
+                    btn.classList.add("sort");
+                    btn.innerHTML = element;
+                    btn.setAttribute("data-sort", element);
+
+                    btn_holder.appendChild(btn);
                 });
             }
+
+            const insertRows = (rows, index_table)=>{
+                if(rows.lenght < 1){
+                    throw new Error("입력이 배열이 아님");
+                }
+
+                const table_holder = document.querySelector("table>tbody.list");
+
+                if((table_holder === undefined) || (table_holder === null)){
+                    throw new Error("리스트가 들어갈 공간이 없음");
+                }
+
+                rows.forEach(row=>{
+                    const row_html = document.createElement('tr');
+                    
+                    row.split(",").forEach((column,index)=>{
+                        const column_html = document.createElement('td');
+                        column_html.classList.add(index_table[index]);
+                        column_html.innerHTML = column;
+
+                        row_html.appendChild(column_html);
+                    });
+
+                    table_holder.appendChild(row_html);
+                });
+            }
+
+            const fetchData = async (url)=>{
+
+                try{
+                    const response = await fetch(url);
+
+                    if(!response.ok){
+                        throw new Error(`HTTP Error : ${response.status}`);
+                    }
+
+                    const data = await response.text();
+
+                    return data;
+                }catch(error){
+                    console.error('an error occured on processing : ', error);
+                }
+
+            }
+
+
         </script>
     </head>
     <body>
         <div id="users">
             <input class="search" placeholder="Search" />
-            <button class="sort" data-sort="name">이름순 정렬</button>
-            <button class="sort" data-sort="price">가격순 정렬</button>
+            <div id="sortbtns">
+
+            </div>
 
             <table>
                 <tbody class="list">
-                    <tr>
+                    <!-- <tr>
                         <td class="name">사과</td>
                         <td class="price">5000</td>
                     </tr>
@@ -36,7 +123,7 @@
                     <tr>
                         <td class="name">수박</td>
                         <td class="price">12000</td>
-                    </tr>
+                    </tr> -->
                 </tbody>
             </table>
         </div>
