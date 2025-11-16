@@ -1,0 +1,44 @@
+<html>
+    <head>
+        <script src="./list.min.js"></script>
+        <script>
+            window.onload = ()=>{
+                var userList = new List('users', {
+                    valueNames: ['name', 'price']
+                });
+            }
+        </script>
+    </head>
+    <body>
+        <div id="users">
+            <input class="search" placeholder="Search" />
+            <button class="sort" data-sort="name">이름순 정렬</button>
+            <button class="sort" data-sort="price">가격순 정렬</button>
+
+            <table>
+                <tbody class="list">
+                    <tr>
+                        <td class="name">사과</td>
+                        <td class="price">5000</td>
+                    </tr>
+                    <tr>
+                        <td class="name">바나나</td>
+                        <td class="price">2000</td>
+                    </tr>
+                    <tr>
+                        <td class="name">귤</td>
+                        <td class="price">3000</td>
+                    </tr>
+                    <tr>
+                        <td class="name">포도</td>
+                        <td class="price">9000</td>
+                    </tr>
+                    <tr>
+                        <td class="name">수박</td>
+                        <td class="price">12000</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </body>
+</html>
