@@ -1,9 +1,12 @@
 <html>
     <head>
+        <title>모동숲 해산물 가격표</title>
         <script src="./list.min.js"></script>
         <script>
 
             let userList = null;
+
+            const root = document.documentElement;
 
             window.onload = async ()=>{
                 try{
@@ -103,10 +106,29 @@
                 rows.forEach(row=>{
                     const row_html = document.createElement('tr');
                     
+                    let cur_name = "";
+
                     row.split(",").forEach((column,index)=>{
                         const column_html = document.createElement('td');
+
+                        if(index_table[index] == "이름"){
+                            cur_name = column;
+                            //const img = document.createElement('img');
+                            //img.src = `./src/${}`
+                        }
+
                         column_html.classList.add(index_table[index]);
-                        column_html.innerHTML = column;
+
+                        if(index_table[index] == "이미지"){
+                            const img = document.createElement('img');
+                            img.src = `./src/${cur_name}.png`;
+                            column_html.appendChild(img);
+                        }else{
+                            const span = document.createElement('span');
+                            span.textContent = column;
+                            column_html.appendChild(span);
+                        }
+
 
                         row_html.appendChild(column_html);
                     });
@@ -133,15 +155,53 @@
 
             }
 
+            const imgSizeChange = (event)=>{
+                root.style.setProperty('--img-size', event.target.value+'px');
+            }
 
         </script>
+
+        <style>
+            :root{
+                --img-size: 20px;
+                --text-margin: 20px;
+
+                --border-style: 1px solid black;
+            }
+            img{
+                width: var(--img-size);
+                height: var(--img-size);
+            }
+            button{
+                width: -webkit-fill-available;
+            }
+            table{
+                border-collapse: collapse;
+            }
+            td{
+                border-left: var(--border-style);
+            }
+            td.이미지{
+                text-align: center;
+            }
+            td:last-child{
+                border-right: var(--border-style)
+            }
+            td > span{
+                padding-left: var(--text-margin);
+                padding-right: var(--text-margin);
+            }
+            tr:nth-child(odd){
+                background-color: #19ff001a;
+            }
+        </style>
     </head>
     <body>
         <input type="file" onchange="filechanged(event)">
         <div id="users">
-            <input class="search" placeholder="Search" />
-            <div>
-
+            <div style="display: flex;">
+                <input class="search" placeholder="Search" />
+                <input type="number" placeholder="사진 크기" value="20" onchange="imgSizeChange(event)"/>
             </div>
 
             <table>
